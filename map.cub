@@ -1,0 +1,20 @@
+R 800 600
+NO ./path_to_the_north_texture
+SO ./path_to_the_south_texture
+WE ./path_to_the_west_texture
+EA ./path_to_the_east_texture
+S ./path_to_the_sprite_texture
+F 220,100,2
+C 225,30,3
+
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1 0 0 0 0 0 1 1 1 0 0 1 0 0 1
+1 0 0 0 1 1 1 1 0 0 0 0 0 1 1
+1 1 0 1 1 0 1 0 0 0 0 0 0 0 1
+1 0 0 0 0 1 0 0 0 0 0 0 0 0 1
+1 0 0 1 0 1 0 0 0 0 0 0 0 0 1
+1 1 1 0 1 0 1 1 1 1 1 0 0 1
+1 0 0 0 0 0 0 1 0 0 0 1 0 0 1
+1 0 0 0 0 0 0 1 0 0 0 1 0 0 1
+1 N 0 0 0 0 0 0 0 0 0 1 0 0 1
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
