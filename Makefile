@@ -1,7 +1,7 @@
 CFLAGS =-Wall -Werror -Wextra
 NAME = Cub3D
 
-SRC_FILE = cub3d.c
+SRC_FILE = cub3d.c #sprite.c
 GNL_FILE = get_next_line.c get_next_line_utils.c
 
 LIB_PATH = libft/
@@ -28,8 +28,8 @@ LIB = minilibx/
 
 all: ${NAME}
 
-$(NAME): ${OBJS} ${INC}
-	@gcc -Wall -Werror -Wextra cub3d.c gnl/get_next_line.c gnl/get_next_line_utils.c libft/*.c -I . -L minilibx_linux -lmlx -lXext -lX11 -lm
+$(NAME): ${INC}
+	@gcc -Wall -Werror -Wextra ${SRC_FILE} gnl/get_next_line.c gnl/get_next_line_utils.c libft/*.c -l mlx $(FRAMEWORK)
 
 %.o : %.c
 	@gcc $(FLAGS) -lXext -lX11 -L/usr/X11/lib /usr/X11/lib/libmlx.a -c -I include/ $< -o $@

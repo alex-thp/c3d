@@ -1,0 +1,26 @@
+R 1200 800
+NO ./srcs/arcenciel.xpm
+SO ./srcs/purplestone.xpm
+WE ./srcs/greystone.xpm
+EA ./srcs/redbrick.xpm
+S ./srcs/barrel.xpm
+F 0,130,0
+C 50,0,150
+
+1 1 1 1 1 1 1
+1 0 0 0 0 0 1
+1 0 0 0 0 0 1
+1 0 0 0 0 0 1
+1 0 0 0 0 0 1
+1 0 0 0 0 0 1
+1 0 0 0 0 0 1
+1 0 1 0 1 0 1
+1 0 0 N 0 0 1
+1 0 1 0 1 0 1
+1 0 0 0 0 0 1
+1 0 0 0 0 0 1
+1 0 0 0 0 0 1
+1 0 2 0 2 0 1
+1 0 0 2 0 0 1
+1 0 0 0 0 0 1
+1 1 1 1 1 1 1
