@@ -6,7 +6,7 @@
 /*   By: ade-temm <ade-temm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/02 16:54:42 by ade-temm          #+#    #+#             */
-/*   Updated: 2020/02/19 12:30:50 by ade-temm         ###   ########.fr       */
+/*   Updated: 2020/02/20 14:28:21 by ade-temm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,8 @@ void    ft_init_ray(t_map *tab)
     tab->dist->hit = 0;
     tab->map_x = (int)tab->pos_x;
     tab->map_y = (int)tab->pos_y;
+    tab->planeX = cos((tab->angle + 90) * M_PI / 180) * 0.54;
+	tab->planeY = sin((tab->angle + 90) * M_PI / 180) * 0.54;
     // printf("raydirX [%f], raydirY [%f]\n", tab->dist->rayDirX, tab->dist->rayDirY);
 }
 
@@ -196,7 +198,6 @@ void       init_dir(t_map *tab)
         tab->dist->dirY = -1;
     if (tab->angle < 180)
         tab->dist->dirY = 1;
-    tab->invDet = 1.0 / (tab->planeX * tab->dist->dirY - tab->dist->dirX * tab->planeY);
 }
 
 void    init_image(t_map *tab)
@@ -279,8 +280,6 @@ void    display_ray(t_map *tab)
 
 void    wall_distance(t_map *tab)
 {
-    int     i;
-
     if (tab->dist->side == 0)
         tab->dist->WallDist = (tab->map_x - tab->pos_x + (1.0 - (double)tab->dist->stepX) / 2.0) / tab->dist->rayDirX;
     else
@@ -294,9 +293,7 @@ void    wall_distance(t_map *tab)
     tab->dist->hauteur_line = (int)(tab->doc->res_y / tab->dist->WallDistNoFish);
     tab->dist->draw_start = (int)(-(tab->dist->hauteur_line / 2) + tab->dist->res_y / 2);
     tab->dist->draw_end = (tab->dist->hauteur_line / 2) + tab->dist->res_y / 2;
-    i = (double)tab->dist->x / tab->dist->res_x * 60;
-    tab->zbuffer[i] = tab->dist->WallDist;
-    printf("%d et %f\n", i, tab->zbuffer[i]);
+    tab->zbuffer[tab->dist->x] = tab->dist->WallDist;
 }
 
 void    calc_dist(t_map *tab)
@@ -338,21 +335,21 @@ int     check_game(t_map *tab)
         tab->angle += 2;
         tab->angle = tab->angle > 360 ? tab->angle - 360 : tab->angle;
         tab->oldPlaneX = tab->planeX;
-        tab->planeX = tab->planeX * cos(-2) - tab->planeY * sin(-2);
-        tab->planeY = tab->oldPlaneX * sin(-2) + tab->planeY * cos(-2);
+        tab->planeX = tab->planeX * cos(-2.5) - tab->planeY * sin(-2.5);
+        tab->planeY = tab->oldPlaneX * sin(-2.5) + tab->planeY * cos(-2.5);
     }
     if (tab->moove.tourner_d == 1)
     {
         tab->angle -= 2;
         tab->angle = tab->angle < 0 ? 360 - tab->angle : tab->angle;
         tab->oldPlaneX = tab->planeX;
-        tab->planeX = tab->planeX * cos(-2) - tab->planeY * sin(-2);
-        tab->planeY = tab->oldPlaneX * sin(-2) + tab->planeY * cos(-2);
+        tab->planeX = tab->planeX * cos(-2.5) - tab->planeY * sin(-2.5);
+        tab->planeY = tab->oldPlaneX * sin(-2.5) + tab->planeY * cos(-2.5);
     }
     if (tab->moove.droite)
     {
-        tab->planeX = cos(tab->angle + 90 * (M_PI / 180)) * 0.66;
-        tab->planeY = sin(tab->angle + 90 * (M_PI / 180)) * 0.66;
+        // tab->planeX = cos((tab->angle + 90) * M_PI / 180) * 0.66;
+        // tab->planeY = sin((tab->angle + 90) * M_PI / 180) * 0.66;
         if (tab->map[(int)(tab->pos_x - cos((tab->angle + 90) * M_PI / 180) * tab->moove.speed)]
         [(int)(tab->pos_y - sin((tab->angle + 90) * M_PI / 180) * tab->moove.speed)] == '0')
         {
@@ -362,8 +359,8 @@ int     check_game(t_map *tab)
     }
     if (tab->moove.gauche)
     {
-        tab->planeX = cos(tab->angle + 90 * (M_PI / 180)) * 0.66;
-        tab->planeY = sin(tab->angle + 90 * (M_PI / 180)) * 0.66;
+        // tab->planeX = cos((tab->angle + 90) * M_PI / 180) * 0.66;
+        // tab->planeY = sin((tab->angle + 90) * M_PI / 180) * 0.66;
         if (tab->map[(int)(tab->pos_x + cos((tab->angle + 90) * M_PI / 180) * tab->moove.speed)]
         [(int)(tab->pos_y + sin((tab->angle + 90) * M_PI / 180) * tab->moove.speed)] == '0')
         {
@@ -393,60 +390,6 @@ int     check_game(t_map *tab)
     return (0);
 }
 
-// void       do_sprite2(t_map *tab, int k)
-// {
-//     int     i;
-//     int     j;
-
-//     i = tab->sprite[k].drawStartX;
-//     while (i < tab->sprite[k].drawEndX)
-//     {
-//         tab->sprite[k].texX = (int)((256 * (i - (-tab->sprite[k].width / 2 + tab->sprite[k].screenX)) * 64 / tab->sprite[k].width) / 256);
-//         if (tab->transformY > 0 && i > 0 && i < tab->doc->res_x && tab->transformY < tab->sprite[k].sp_dist)
-//         {
-//             j = tab->sprite[k].drawStartY;
-//             while (j < tab->sprite[k].drawEndY)
-//             {
-//                 tab->sprite[k].d = j * 256 - tab->doc->res_y * 128 + tab->sprite[k].height * 128;
-//                 tab->sprite[k].texY = ((tab->sprite[k].d * *(tab->texture[4].height)) / tab->sprite[k].height) / 256;
-//             //    if (tab->texture[4].img[tab->sprite->width * tab->sprite->texY + tab->sprite->texX] != tab->texture[4].img[0])
-//                 // {
-//                     tab->mlx.var[j * tab->doc->res_x + i] = tab->texture[4].img[tab->sprite[k].width * tab->sprite[k].texY + tab->sprite[k].texX];
-//                 // }
-//                 // j++;
-//             }
-//         }
-//         i++;
-//     }
-// }
-
-// void    do_sprite(t_map *tab, int i)
-// {
-//     tab->invDet = 1.0 / (tab->planeX * sin(tab->angle * (M_PI / 180)) - cos(tab->angle * (M_PI / 180)) * tab->planeY);
-//     tab->sprite[i].spriteX = (double)tab->sprite[i].pos_x - tab->pos_x;
-//     tab->sprite[i].spriteY = (double)tab->sprite[i].pos_y - tab->pos_y;
-//     tab->transformX = tab->invDet * (sin(tab->angle * (M_PI / 180)) * tab->sprite[i].spriteX - cos(tab->angle * (M_PI / 180)) * tab->sprite[i].spriteY);
-//     tab->transformY = tab->invDet * (-tab->planeY * tab->sprite[i].spriteX + tab->planeX * tab->sprite[i].spriteY);
-//     tab->sprite[i].vmv = (int)(tab->sprite[i].width / tab->transformY);
-//     tab->sprite[i].screenX = (int)((tab->doc->res_x / 2) * (1 + tab->transformX / tab->transformY));
-//     tab->sprite[i].height = abs((int)(tab->doc->res_y / (tab->transformY))) / 1;
-//     tab->sprite[i].width = abs((int)(tab->doc->res_y / (tab->transformY))) / 1;
-//     tab->sprite[i].drawStartY = (-tab->sprite[i].height / 2 + tab->doc->res_y / 2) + tab->sprite[i].vmv;
-//     if (tab->sprite[i].drawStartY < 0) 
-//         tab->sprite[i].drawStartY = 0;
-//     tab->sprite[i].drawEndY = tab->sprite->height / 2 + tab->doc->res_y / 2 + tab->sprite[i].vmv;
-//     if (tab->sprite[i].drawEndY >= tab->doc->res_y) 
-//         tab->sprite[i].drawEndY = tab->doc->res_y - 1;
-//     tab->sprite[i].drawStartX = -tab->sprite[i].width / 2 + tab->sprite[i].screenX;
-//     if (tab->sprite[i].drawStartX < 0)
-//         tab->sprite[i].drawStartX = 0;
-//     tab->sprite[i].drawEndX = tab->sprite[i].width / 2 + tab->sprite[i].screenX;
-//     if (tab->sprite[i].drawEndX >= tab->doc->res_x) 
-//         tab->sprite[i].drawEndX = tab->doc->res_x - 1;
-//     //printf("i = %d, tab->sprite[i].drawStartX : %d, tab->sprite[i].drawEndX : %d, tab->sprite[i].drawStartY %d, tab->sprite[i].drawEndY : %d\n", i, tab->sprite[i].drawStartX, tab->sprite[i].drawEndX, tab->sprite[i].drawStartY, tab->sprite[i].drawEndY);
-//     do_sprite2(tab, i);
-// }
-
 int     loop_game(t_map *tab)
 {
     int     i;
@@ -462,12 +405,13 @@ int     loop_game(t_map *tab)
             calc_dist(tab);
             display_ray(tab);
         }
-        // ft_sort_sprite(tab);
-        // while (i < tab->nb_sprite)
-        // {
-        //     do_sprite(tab, i);
-        //     i++;
-        // }
+        init_dir(tab);
+        while (i < tab->nb_sprite)
+        {
+            ft_sort_sprite(tab);
+            ft_print_sprite(tab, i);
+            i++;
+        }
     }
     mlx_put_image_to_window(tab->mlx.ptr, tab->mlx.win, tab->mlx.img, 0, 0);
     return (0);
@@ -566,12 +510,12 @@ int     main(int ac, char **av)
         return (-1);
     if (!(dist = (t_pos*)malloc(sizeof(t_pos))))
         return (-1);
-    if(!(tab->zbuffer = (double*)malloc(sizeof(double) * 61)))
-        return (-1);
     tab->doc = doc;
     tab->dist = dist;
     fd = open(av[1], O_RDONLY);
     ft_parse_doc(fd, doc);
+    if(!(tab->zbuffer = (double*)malloc(sizeof(double) * tab->doc->res_x))) //OCAOU + 1
+        return (-1);
     tab->map = ft_split(tab->doc->map, '.');
     position(tab);
     init_image(tab);
@@ -581,7 +525,7 @@ int     main(int ac, char **av)
     while (++fd < 5)
         read_xpm_texture(tab->doc, tab, fd);
     //int mlx_hook(void *win_ptr, int x_event, int x_mask, int (*funct)(), void *param);
-    //ft_get_sprite(tab);
+    ft_get_sprite(tab);
     mlx_hook(tab->mlx.win, 2, 0, appuyer, tab);
 	mlx_hook(tab->mlx.win, 3, 0, relacher, tab);
     mlx_hook(tab->mlx.win, 17, 0, ft_close, tab);

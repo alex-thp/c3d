@@ -6,7 +6,7 @@
 /*   By: ade-temm <ade-temm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/01 11:18:10 by ade-temm          #+#    #+#             */
-/*   Updated: 2020/02/19 12:13:11 by ade-temm         ###   ########.fr       */
+/*   Updated: 2020/02/20 12:49:35 by ade-temm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,21 +109,12 @@ typedef struct	s_sprite
 {
 	float		x;
 	float		y;
-	float		spriteX;
-	float		spriteY;
 	float		dist;
 	float		perp_WD;
-	int			screenX;
+	float		pos_x;
+	float		pos_y;
 	int			height;
 	int			width;
-	int			drawStartY;
-	int			drawStartX;
-	int			drawEndX;
-	int			drawEndY;
-	int			vmv;
-	int			texX;
-	int			texY;
-	int			d;
 	int			indic;
 	struct s_sprite *next;
 }				t_sprite;
@@ -142,7 +133,22 @@ typedef struct	s_map
 	t_set		mlx;
 	t_moove		moove;
 	t_text		texture[5];
+	char		**map;
 	double		*zbuffer;
+	int			sprite_d;
+	int			sprite_drawStartY;
+	int			sprite_drawStartX;
+	int			sprite_drawEndX;
+	int			sprite_drawEndY;
+	int			texX;
+	int			texY;
+	int			screenX;
+	float		spriteX;
+	float		spriteY;
+	float		height_sprite_percue;
+	float		sprite_width_percue;
+	int			startX;
+	int			startY;
 	int			num;
 	int			nb_sprite;
 	float		planeX;
@@ -152,15 +158,17 @@ typedef struct	s_map
 	float		invDet;
 	float		transformX;
 	float		transformY;
-	char		**map;
 	float		pos_x;
 	float		pos_y;
 	int			map_x;
 	int			map_y;
 	float		angle;
 	int			first_round;
+	int			vmv;
 }				t_map;
 
 void    ft_get_sprite(t_map *tab);
 void    ft_sort_sprite(t_map *tab);
+void    ft_print_sprite(t_map *tab, int i);
+void    init_dir(t_map *tab);
 #endif

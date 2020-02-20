@@ -1,7 +1,7 @@
 CFLAGS =-Wall -Werror -Wextra
 NAME = Cub3D
 
-SRC_FILE = cub3d.c #sprite.c
+SRC_FILE = cub3d.c sprite.c
 GNL_FILE = get_next_line.c get_next_line_utils.c
 
 LIB_PATH = libft/
