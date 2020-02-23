@@ -6,7 +6,7 @@
 /*   By: ade-temm <ade-temm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/02 16:54:42 by ade-temm          #+#    #+#             */
-/*   Updated: 2020/02/20 14:28:21 by ade-temm         ###   ########.fr       */
+/*   Updated: 2020/02/23 09:41:15 by ade-temm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,8 +158,9 @@ void    ft_init_ray(t_map *tab)
     tab->dist->hit = 0;
     tab->map_x = (int)tab->pos_x;
     tab->map_y = (int)tab->pos_y;
-    tab->planeX = cos((tab->angle + 90) * M_PI / 180) * 0.54;
-	tab->planeY = sin((tab->angle + 90) * M_PI / 180) * 0.54;
+
+    
+
     // printf("raydirX [%f], raydirY [%f]\n", tab->dist->rayDirX, tab->dist->rayDirY);
 }
 
@@ -190,14 +191,14 @@ void    calc_dist_xy(t_map *tab)
 //Mettre à jour quand on fait les sprites, la ré-appeller
 void       init_dir(t_map *tab)
 {
-    if (tab->angle < 270 && tab->angle > 90)
-        tab->dist->dirX = -1;
-    if (tab->angle > 270 || tab->angle < 90)
-        tab->dist->dirX = 1;
-    if (tab->angle > 180)
-        tab->dist->dirY = -1;
-    if (tab->angle < 180)
-        tab->dist->dirY = 1;
+    // if (tab->angle < 270 && tab->angle > 90)
+        // tab->dist->dirX = -cos(tab->angle * M_PI / 180);//-1;
+    // if (tab->angle >= 270 || tab->angle <= 90)
+        tab->dist->dirX = cos(tab->angle * M_PI / 180);//1;
+    // if (tab->angle > 180)
+        tab->dist->dirY = sin(tab->angle * M_PI / 180);//-1;
+    // if (tab->angle <= 180)
+        // tab->dist->dirY = -sin(tab->angle * M_PI / 180);//1;
 }
 
 void    init_image(t_map *tab)
@@ -281,9 +282,9 @@ void    display_ray(t_map *tab)
 void    wall_distance(t_map *tab)
 {
     if (tab->dist->side == 0)
-        tab->dist->WallDist = (tab->map_x - tab->pos_x + (1.0 - (double)tab->dist->stepX) / 2.0) / tab->dist->rayDirX;
+        tab->dist->WallDist = fabs((tab->map_x - tab->pos_x + (1.0 - (double)tab->dist->stepX) / 2.0) / tab->dist->rayDirX);
     else
-        tab->dist->WallDist = (tab->map_y - tab->pos_y + (1.0 - (double)tab->dist->stepY) / 2.0) / tab->dist->rayDirY;
+        tab->dist->WallDist = fabs((tab->map_y - tab->pos_y + (1.0 - (double)tab->dist->stepY) / 2.0) / tab->dist->rayDirY);
     if (tab->dist->side == 1)
         ft_get_column(tab, 'y');
     else
@@ -293,7 +294,7 @@ void    wall_distance(t_map *tab)
     tab->dist->hauteur_line = (int)(tab->doc->res_y / tab->dist->WallDistNoFish);
     tab->dist->draw_start = (int)(-(tab->dist->hauteur_line / 2) + tab->dist->res_y / 2);
     tab->dist->draw_end = (tab->dist->hauteur_line / 2) + tab->dist->res_y / 2;
-    tab->zbuffer[tab->dist->x] = tab->dist->WallDist;
+    tab->zbuffer[tab->dist->x] = tab->dist->WallDistNoFish;
 }
 
 void    calc_dist(t_map *tab)
@@ -330,26 +331,30 @@ void    calc_dist(t_map *tab)
 
 int     check_game(t_map *tab)
 {
-    if (tab->moove.tourner_g == 1)
-    {
-        tab->angle += 2;
-        tab->angle = tab->angle > 360 ? tab->angle - 360 : tab->angle;
-        tab->oldPlaneX = tab->planeX;
-        tab->planeX = tab->planeX * cos(-2.5) - tab->planeY * sin(-2.5);
-        tab->planeY = tab->oldPlaneX * sin(-2.5) + tab->planeY * cos(-2.5);
-    }
     if (tab->moove.tourner_d == 1)
     {
-        tab->angle -= 2;
+        tab->angle += 3;
+        tab->angle = tab->angle > 360 ? tab->angle - 360 : tab->angle;
+        tab->planeX = cos((tab->angle + 90) * M_PI / 180);// * 0.66;
+        tab->planeY = sin((tab->angle + 90) * M_PI / 180);
+        // tab->oldPlaneX = tab->planeX;
+        // tab->planeX = tab->planeX * cos(3 * (M_PI / 180)) + tab->planeY * sin(3 * (M_PI / 180));
+        // tab->planeY = tab->oldPlaneX * sin(3 * (M_PI / 180)) + tab->planeY * cos(3 * (M_PI / 180));
+    }
+    if (tab->moove.tourner_g == 1)
+    {
+        tab->angle -= 3;
         tab->angle = tab->angle < 0 ? 360 - tab->angle : tab->angle;
-        tab->oldPlaneX = tab->planeX;
-        tab->planeX = tab->planeX * cos(-2.5) - tab->planeY * sin(-2.5);
-        tab->planeY = tab->oldPlaneX * sin(-2.5) + tab->planeY * cos(-2.5);
+        tab->planeX = cos((tab->angle + 90) * M_PI / 180);// * 0.66;
+        tab->planeY = sin((tab->angle + 90) * M_PI / 180);
+        // tab->oldPlaneX = tab->planeX;
+        // tab->planeX = tab->planeX * cos(-3 * (M_PI / 180)) + tab->planeY * sin(-3 * (M_PI / 180));
+        // tab->planeY = tab->oldPlaneX * sin(-3 * (M_PI / 180)) + tab->planeY * cos(-3 * (M_PI / 180));
     }
     if (tab->moove.droite)
     {
-        // tab->planeX = cos((tab->angle + 90) * M_PI / 180) * 0.66;
-        // tab->planeY = sin((tab->angle + 90) * M_PI / 180) * 0.66;
+        tab->planeX = cos((tab->angle + 90) * M_PI / 180);// * 0.66;
+        tab->planeY = sin((tab->angle + 90) * M_PI / 180);// * 0.66;
         if (tab->map[(int)(tab->pos_x - cos((tab->angle + 90) * M_PI / 180) * tab->moove.speed)]
         [(int)(tab->pos_y - sin((tab->angle + 90) * M_PI / 180) * tab->moove.speed)] == '0')
         {
@@ -359,8 +364,8 @@ int     check_game(t_map *tab)
     }
     if (tab->moove.gauche)
     {
-        // tab->planeX = cos((tab->angle + 90) * M_PI / 180) * 0.66;
-        // tab->planeY = sin((tab->angle + 90) * M_PI / 180) * 0.66;
+        tab->planeX = cos((tab->angle + 90) * M_PI / 180);// * 0.66;
+        tab->planeY = sin((tab->angle + 90) * M_PI / 180);// * 0.66;
         if (tab->map[(int)(tab->pos_x + cos((tab->angle + 90) * M_PI / 180) * tab->moove.speed)]
         [(int)(tab->pos_y + sin((tab->angle + 90) * M_PI / 180) * tab->moove.speed)] == '0')
         {
@@ -459,9 +464,9 @@ int     appuyer(int keycode, t_map *tab)
         ft_close();
     if (keycode == 257)
         tab->moove.speed = 0.3;
-    if (keycode == 124)
+    if (keycode == 123)
         tab->moove.tourner_d = 1;
-    else if (keycode == 123)
+    else if (keycode == 124)
         tab->moove.tourner_g = 1;
     else if (keycode == 13)
         tab->moove.avancer = 1;
@@ -479,9 +484,9 @@ int     relacher(int keycode, t_map *tab)
     // printf("press : %d\n", keycode);
     if (keycode == 257)
         tab->moove.speed = 0.1;
-    if (keycode == 124)
+    if (keycode == 123)
         tab->moove.tourner_d = 0;
-    else if (keycode == 123)
+    else if (keycode == 124)
         tab->moove.tourner_g = 0;
     else if (keycode == 13)
         tab->moove.avancer = 0;
@@ -518,6 +523,10 @@ int     main(int ac, char **av)
         return (-1);
     tab->map = ft_split(tab->doc->map, '.');
     position(tab);
+    tab->planeX = cos((tab->angle + 90) * M_PI / 180);// * 0.66;
+    tab->planeY = sin((tab->angle + 90) * M_PI / 180);
+    // printf("[%f]\n", tab->planeX);
+    // printf("[%f]\n", tab->planeY);
     init_image(tab);
     fd = -1;
     tab->doc->sol.total = ft_get_color(tab->doc->sol);

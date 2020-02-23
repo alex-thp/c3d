@@ -6,7 +6,7 @@
 /*   By: ade-temm <ade-temm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/01 11:18:10 by ade-temm          #+#    #+#             */
-/*   Updated: 2020/02/20 12:49:35 by ade-temm         ###   ########.fr       */
+/*   Updated: 2020/02/22 14:39:53 by ade-temm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,7 @@ typedef struct	s_map
 
 void    ft_get_sprite(t_map *tab);
 void    ft_sort_sprite(t_map *tab);
+void    ft_calc_var_sprite(t_map *tab, int i);
 void    ft_print_sprite(t_map *tab, int i);
 void    init_dir(t_map *tab);
 #endif

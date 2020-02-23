@@ -6,7 +6,7 @@
 /*   By: ade-temm <ade-temm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/10 16:52:58 by ade-temm          #+#    #+#             */
-/*   Updated: 2020/02/20 14:29:08 by ade-temm         ###   ########.fr       */
+/*   Updated: 2020/02/22 15:11:05 by ade-temm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,15 +114,21 @@ void        ft_get_sprite(t_map *tab)
 
 void    ft_calc_var_sprite(t_map *tab, int i)
 {
+    // init_dir(tab);
     tab->spriteX = (tab->sprite[i].pos_x - tab->pos_x);
     tab->spriteY = (tab->sprite[i].pos_y - tab->pos_y);
     //printf("[%d] [%d]\n", i, tab->nb_sprite);
     // printf("SPRITE x : [%f] [%f] [%f]\n", tab->spriteX, tab->sprite[i].pos_x, tab->pos_x);
 	// printf("SPRITE y : [%f] [%f] [%f]\n", tab->spriteY, tab->sprite[i].pos_y, tab->pos_y);
-    tab->invDet = 1.0 / (tab->planeX * sin(tab->angle * (M_PI / 180)) - cos(tab->angle * (M_PI * 180)) * tab->planeY);
-    tab->transformX = tab->invDet * (sin(tab->angle * (M_PI / 180)) * tab->spriteX - cos(tab->angle * (M_PI / 180)) * tab->spriteY);
-    tab->transformY = tab->invDet * (-tab->planeY * tab->spriteX + tab->planeX * tab->spriteY);
     // printf("tab->transformY[%f], tab->invDet [%f], tab->planeY [%f], tab->planeX [%f], tab->spriteX [%f], tab->spriteY [%f]\n", tab->transformY, tab->invDet, tab->planeY, tab->planeX, tab->spriteX, tab->spriteY);
+    //printf("tab->doc->res_y [%d], tab->transformY [%f]\n", tab->doc->res_y, tab->transformY);
+    //printf("tab->sprite_drawEndX [%d], tab->sprite_width_percue[%f], tab->screenX [%d]\n", tab->sprite_drawEndX, tab->sprite_width_percue, tab->screenX);
+    //printf("tab->sprite_drawStartX %d\n", tab->sprite_drawStartX);
+    //tab->invDet = 1.0 / (tab->planeX * sin(tab->angle * M_PI / 180) - cos(tab->angle * M_PI / 180) * tab->planeY);
+    tab->invDet = 1.0 / (tab->planeX * tab->dist->dirY - tab->dist->dirX * tab->planeY);
+    tab->transformX = tab->invDet * (tab->dist->dirY * tab->spriteX - tab->dist->dirX * tab->spriteY);
+    tab->transformY = tab->invDet * (-tab->planeY * tab->spriteX + tab->planeX * tab->spriteY);
+//    tab->vmv = (int)((float)(*tab->texture[4].width) / tab->transformY); //Attention ici
     tab->vmv = (int)((float)(*tab->texture[4].width) / tab->transformY); //Attention ici
     tab->screenX = (int)((tab->doc->res_x / 2) * (1 + tab->transformX / tab->transformY));
     tab->height_sprite_percue = 1.5 * (abs((int)(tab->doc->res_y / tab->transformY)) / 1); //taille des sprites ici
@@ -133,15 +139,12 @@ void    ft_calc_var_sprite(t_map *tab, int i)
     if (tab->sprite_drawEndY >= tab->doc->res_y)
         tab->sprite_drawEndY = tab->doc->res_y - 1;
     tab->sprite_width_percue = abs((int)(tab->doc->res_y / tab->transformY));
-    //printf("tab->doc->res_y [%d], tab->transformY [%f]\n", tab->doc->res_y, tab->transformY);
-    tab->sprite_drawStartX = -(*tab->texture[4].width / 2) + tab->screenX;
-    tab->sprite_drawEndX = tab->sprite_width_percue / 2 + tab->screenX;
-    //printf("tab->sprite_drawEndX [%d], tab->sprite_width_percue[%f], tab->screenX [%d]\n", tab->sprite_drawEndX, tab->sprite_width_percue, tab->screenX);
+    tab->sprite_drawStartX = -(tab->sprite_width_percue / 2) + tab->screenX;
+    tab->sprite_drawEndX = (tab->sprite_width_percue / 2) + tab->screenX;
     if (tab->sprite_drawStartX < 0)
         tab->sprite_drawStartX = 0;
     if (tab->sprite_drawEndX >= tab->doc->res_x)
         tab->sprite_drawEndX = tab->doc->res_x - 1;
-    //printf("tab->sprite_drawStartX %d\n", tab->sprite_drawStartX);
     tab->startX = tab->sprite_drawStartX;
 }
 
@@ -150,10 +153,10 @@ void    ft_print_sprite(t_map *tab, int i)
     ft_calc_var_sprite(tab, i);
     while (tab->startX < tab->sprite_drawEndX)
     {
-        tab->texX = (int)(256 * (tab->startX - (-tab->height_sprite_percue / 2 + tab->screenX)) * (((float)*tab->texture[4].width / tab->height_sprite_percue))) / 256;
-        //printf("tab->transformY [%f], tab->startX [%d], tab->zbuffer[tab->startX][%f]\n", tab->transformY, tab->startX, tab->zbuffer[tab->startX]);
-        //printf("tab->transformY %f, tab->startX %d, tab->zbuffer[tab->startX] %f\n", tab->transformY, tab->startX, tab->zbuffer[tab->startX]);
-        if (tab->transformY > 0 && tab->startX > 0 && tab->startX < tab->doc->res_x && tab->transformY < tab->zbuffer[tab->startX])
+        tab->texX = (int)(256 * (tab->startX - (-tab->sprite_width_percue / 2 + tab->screenX)) * (((float)*tab->texture[4].width / tab->sprite_width_percue))) / 256;
+        // printf("tab->transformY [%f], tab->startX [%d], tab->zbuffer[tab->startX][%f]\n", tab->transformY, tab->startX, tab->zbuffer[tab->startX]);
+        //printf("tab->transformY %f, tab->startX %d, tab->zbuffer[tab->startX] %f, res_x = %d\n\n", tab->transformY, tab->startX, tab->zbuffer[tab->startX], tab->doc->res_x);
+        if (tab->startX > 0 && tab->startX < tab->doc->res_x && tab->transformY < tab->zbuffer[tab->startX] && tab->transformY > 0)
         {
             tab->startY = tab->sprite_drawStartY;
             while (tab->startY < tab->sprite_drawEndY)
@@ -161,7 +164,7 @@ void    ft_print_sprite(t_map *tab, int i)
                 tab->sprite_d = (tab->startY - tab->vmv) * 256 - tab->doc->res_y * 128 + tab->height_sprite_percue * 128;
                 tab->texY = tab->sprite_d * *tab->texture[4].height / tab->height_sprite_percue / 256;
                 if (tab->texture[4].img[*tab->texture[4].width * tab->texY + tab->texX] != tab->texture[4].img[1])
-                    tab->mlx.var[tab->startY * tab->doc->res_x + tab->startX] = tab->texture[4].img[*tab->texture[4].width * tab->texY + tab->texX];
+                    tab->mlx.var[tab->startY * tab->doc->res_x + tab->doc->res_x - tab->startX] = tab->texture[4].img[*tab->texture[4].width * tab->texY + tab->texX];
                 tab->startY++;
             }
         }
