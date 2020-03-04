@@ -1,7 +1,8 @@
 CFLAGS =-Wall -Werror -Wextra
-NAME = Cub3D
+SANI_FLAGS = -g3 -fsanitize=address
+NAME = cub3D
 
-SRC_FILE = cub3d.c sprite.c
+SRC_FILE = cub3d.c sprite.c screenshot.c parse_doc.c
 GNL_FILE = get_next_line.c get_next_line_utils.c
 
 LIB_PATH = libft/
@@ -16,7 +17,9 @@ ft_putchar_fd.c \
 ft_strchr.c \
 ft_sdupfr.c \
 ft_isdigit.c \
-ft_strlen.c
+ft_strlen.c \
+ft_memcpy.c \
+ft_strdup.c
 
 GNL_PATH = gnl/
 INC= cub3d.h
@@ -29,7 +32,7 @@ LIB = minilibx/
 all: ${NAME}
 
 $(NAME): ${INC}
-	@gcc -Wall -Werror -Wextra ${SRC_FILE} gnl/get_next_line.c gnl/get_next_line_utils.c libft/*.c -l mlx $(FRAMEWORK)
+	@gcc $(CFLAGS) ${SRC_FILE} gnl/get_next_line.c gnl/get_next_line_utils.c libft/*.c -l mlx $(FRAMEWORK) -o cub3d
 
 %.o : %.c
 	@gcc $(FLAGS) -lXext -lX11 -L/usr/X11/lib /usr/X11/lib/libmlx.a -c -I include/ $< -o $@
@@ -42,4 +45,4 @@ fclean: clean
 
 bonus :
 
-re: clean all
+re: fclean all

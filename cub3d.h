@@ -6,7 +6,7 @@
 /*   By: ade-temm <ade-temm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/01 11:18:10 by ade-temm          #+#    #+#             */
-/*   Updated: 2020/02/22 14:39:53 by ade-temm         ###   ########.fr       */
+/*   Updated: 2020/03/03 15:10:07 by ade-temm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct	s_doc
 {
 	int			res_x;
 	int			res_y;
+	int			res;
 	char		*NO;
 	char		*SO;
 	char		*WE;
@@ -56,7 +57,6 @@ typedef struct	s_pos
 	double		dirX;
 	double		dirY;
 	double		oldDirX;
-	double		oldDirY;
 	double		deltaDistX;
 	double		deltaDistY;
 	double		sideDistX;
@@ -124,52 +124,65 @@ typedef struct	h_sprite
 	t_sprite	*sprite;
 }				v_sprite;
 
-typedef struct	s_map
+typedef struct	s_screenshot
 {
-	t_doc		*doc;
-	t_pos		*dist;
-	t_sprite	*sprite;
-	t_sprite	*new;
-	t_set		mlx;
-	t_moove		moove;
-	t_text		texture[5];
-	char		**map;
-	double		*zbuffer;
-	int			sprite_d;
-	int			sprite_drawStartY;
-	int			sprite_drawStartX;
-	int			sprite_drawEndX;
-	int			sprite_drawEndY;
-	int			texX;
-	int			texY;
-	int			screenX;
-	float		spriteX;
-	float		spriteY;
-	float		height_sprite_percue;
-	float		sprite_width_percue;
-	int			startX;
-	int			startY;
-	int			num;
-	int			nb_sprite;
-	float		planeX;
-	float		planeY;
-	float		oldPlaneX;
-	float		oldPlaneY;
-	float		invDet;
-	float		transformX;
-	float		transformY;
-	float		pos_x;
-	float		pos_y;
-	int			map_x;
-	int			map_y;
-	float		angle;
-	int			first_round;
-	int			vmv;
-}				t_map;
+	int				fd;
+}				t_screenshot;
+
+typedef struct		s_map
+{
+	t_doc			*doc;
+	t_pos			*dist;
+	t_sprite		*sprite;
+	t_sprite		*new;
+	t_set			mlx;
+	t_moove			moove;
+	t_text			texture[5];
+	t_screenshot	screenshot;
+	char			**map;
+	double			*zbuffer;
+	int				sprite_d;
+	int				sprite_drawStartY;
+	int				sprite_drawStartX;
+	int				sprite_drawEndX;
+	int				sprite_drawEndY;
+	int				texX;
+	int				texY;
+	int				screenX;
+	float			spriteX;
+	float			spriteY;
+	float			height_sprite_percue;
+	float			sprite_width_percue;
+	int				startX;
+	int				startY;
+	int				num;
+	int				nb_sprite;
+	float			planeX;
+	float			planeY;
+	float			oldPlaneX;
+	float			oldPlaneY;
+	float			invDet;
+	float			transformX;
+	float			transformY;
+	float			pos_x;
+	float			pos_y;
+	int				map_x;
+	int				map_y;
+	float			angle;
+	int				first_round;
+	int				vmv;
+	int				check_pos;
+}					t_map;
 
 void    ft_get_sprite(t_map *tab);
 void    ft_sort_sprite(t_map *tab);
 void    ft_calc_var_sprite(t_map *tab, int i);
 void    ft_print_sprite(t_map *tab, int i);
 void    init_dir(t_map *tab);
+void    ft_make_screenshot(t_map *tab);
+int     loop_game(t_map *tab);
+void    check_doc(char *str, t_map *tab);
+void    ft_error(int i);
+int     ft_is_num(char c);
+int    ft_get_color(t_color stuff);
 #endif
