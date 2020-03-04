@@ -6,7 +6,7 @@
 /*   By: ade-temm <ade-temm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/29 09:47:03 by ade-temm          #+#    #+#             */
-/*   Updated: 2020/03/04 09:47:59 by ade-temm         ###   ########.fr       */
+/*   Updated: 2020/03/04 10:35:08 by ade-temm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,35 @@ void    parse_texture(char *str, t_map *tab, int i)
     while (is_whitespace(*(text)) == 0)
         text++;
     if (i == 1)
+    {
+        if (tab->doc->NO)
+            ft_error(11);
         tab->doc->NO = (text + 2);
+    }
     else if (i == 2)
+    {
+        if (tab->doc->SO)
+            ft_error(11);
         tab->doc->SO = (text + 2);
+    }
     else if (i == 3)
+    {
+        if (tab->doc->WE)
+            ft_error(11);
         tab->doc->WE = (text + 2);
+    }
     else if (i == 4)
+    {
+        if (tab->doc->EA)
+            ft_error(11);
         tab->doc->EA = (text + 2);
+    }
     else if (i == 5)
+    {
+        if (tab->doc->S)
+            ft_error(11);
         tab->doc->S = (text + 2);
+    }
 }
 
 
@@ -179,31 +199,6 @@ void    parse_line(char *str, t_map *tab)
     
 }
 
-// char	*clean_str(char *str)
-// {
-// 	int		i;
-// 	int		j;
-// 	char	*res;
-
-// 	i = ft_strlen(str);
-// 	if (!(res = malloc(sizeof(char) * (i + 1))))
-// 		return (NULL);
-// 	i = 0;
-// 	j = 0;
-// 	while (str[i])
-// 	{
-// 		if (str[i] != 32)
-// 		{
-// 			res[j] = str[i];
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	res[j] = 0;
-// 	free(str);
-// 	return (res);
-// }
-
 void    ft_error(int i)
 {
     if (i == -1)
@@ -230,6 +225,8 @@ void    ft_error(int i)
         ft_putstr_fd("Error, no map included in line command\n", 1);
     if (i == 10)
         ft_putstr_fd("Error, bad starting position\n", 1);
+    if (i == 11)
+        ft_putstr_fd("Error, double definition of texture\n", 1);
     exit(0);
 }
 
